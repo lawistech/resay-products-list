@@ -5,19 +5,23 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product } from '../models/product.model';
 
+// Define website types for type safety
+type WebsiteId = 'resay' | 'barcodesforbusiness' | 'androidepos' | 'bestore';
+
 @Injectable({
   providedIn: 'root'
 })
 export class WooCommerceService {
-  private readonly websites = {
+  // Define websites with index signature
+  private readonly websites: Record<WebsiteId, string> = {
     'resay': 'https://resay.co.uk/wp-json/wc/v3',
     'barcodesforbusiness': 'https://barcodesforbusiness.co.uk/wp-json/wc/v3',
     'androidepos': 'https://androidepos.co.uk/wp-json/wc/v3',
-    'bestore':'https://bestore.nangkil.com/wp-json/wc/v3'
+    'bestore': 'https://bestore.nangkil.com/wp-json/wc/v3'
   };
 
-  // WooCommerce API credentials for each website
-  private readonly credentials = {
+  // WooCommerce API credentials for each website with proper type
+  private readonly credentials: Record<WebsiteId, { consumerKey: string; consumerSecret: string }> = {
     'resay': {
       consumerKey: 'YOUR_CONSUMER_KEY_HERE',
       consumerSecret: 'YOUR_CONSUMER_SECRET_HERE'
@@ -31,14 +35,14 @@ export class WooCommerceService {
       consumerSecret: 'YOUR_CONSUMER_SECRET_HERE'
     },
     'bestore': {
-        consumerKey: 'ck_dbc558d52bf4bf21b212c6af314e61a37f1a036a',
-        consumerSecret: 'cs_e7685c06d1728a0dbd1319935d9e70364522fc87'
-      }
+      consumerKey: 'ck_dbc558d52bf4bf21b212c6af314e61a37f1a036a',
+      consumerSecret: 'cs_e7685c06d1728a0dbd1319935d9e70364522fc87'
+    }
   };
 
   constructor(private http: HttpClient) { }
 
-  getProducts(website: string, page: number = 1, perPage: number = 10): Observable<Product[]> {
+  getProducts(website: WebsiteId, page: number = 1, perPage: number = 10): Observable<Product[]> {
     if (!this.websites[website]) {
       throw new Error(`Website ${website} is not supported`);
     }
@@ -66,7 +70,7 @@ export class WooCommerceService {
     );
   }
 
-  getProductById(website: string, productId: number): Observable<Product> {
+  getProductById(website: WebsiteId, productId: number): Observable<Product> {
     if (!this.websites[website]) {
       throw new Error(`Website ${website} is not supported`);
     }
@@ -92,7 +96,7 @@ export class WooCommerceService {
     );
   }
 
-  searchProducts(website: string, searchTerm: string, page: number = 1, perPage: number = 10): Observable<Product[]> {
+  searchProducts(website: WebsiteId, searchTerm: string, page: number = 1, perPage: number = 10): Observable<Product[]> {
     if (!this.websites[website]) {
       throw new Error(`Website ${website} is not supported`);
     }

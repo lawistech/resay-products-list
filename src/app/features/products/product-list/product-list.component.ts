@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { WooCommerceService } from '../../../core/services/woocommerce.service';
 import { Product } from '../../../core/models/product.model';
 
+// Define website types for type safety - must match WooCommerceService
+type WebsiteId = 'resay' | 'barcodesforbusiness' | 'androidepos' | 'bestore';
+
 @Component({
   selector: 'app-product-list',
   standalone: true,
@@ -20,12 +23,13 @@ export class ProductListComponent implements OnInit {
   currentPage = 1;
   totalPages = 1;
   perPage = 10;
-  selectedWebsite = 'resay'; // Default website
+  selectedWebsite: WebsiteId = 'resay'; // Default website with correct type
   searchForm: FormGroup;
   websites = [
-    { id: 'resay', name: 'Resay' },
-    { id: 'barcodesforbusiness', name: 'Barcodes For Business' },
-    { id: 'androidepos', name: 'Android EPOS' }
+    { id: 'resay' as WebsiteId, name: 'Resay' },
+    { id: 'barcodesforbusiness' as WebsiteId, name: 'Barcodes For Business' },
+    { id: 'androidepos' as WebsiteId, name: 'Android EPOS' },
+    { id: 'bestore' as WebsiteId, name: 'BE Store' }
   ];
 
   constructor(
@@ -43,7 +47,7 @@ export class ProductListComponent implements OnInit {
 
     // Subscribe to form value changes to filter products
     this.searchForm.get('website')?.valueChanges.subscribe(website => {
-      this.selectedWebsite = website;
+      this.selectedWebsite = website as WebsiteId;
       this.currentPage = 1; // Reset to first page
       this.loadProducts();
     });
