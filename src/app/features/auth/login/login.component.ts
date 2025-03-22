@@ -1,5 +1,5 @@
 // src/app/features/auth/login/login.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -21,7 +21,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +60,9 @@ export class LoginComponent implements OnInit {
 
       if (result.success) {
         this.notificationService.success('Login successful');
-        this.router.navigateByUrl(this.returnUrl);
+        this.ngZone.run(() => {
+          this.router.navigateByUrl(this.returnUrl);
+        });
       } else {
         this.errorMessage = result.message || 'Invalid email or password';
         this.notificationService.error(this.errorMessage);

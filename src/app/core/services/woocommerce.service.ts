@@ -1,8 +1,8 @@
 // src/app/core/services/woocommerce.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Product } from '../models/product.model';
 
 // Define website types for type safety
@@ -40,11 +40,12 @@ export class WooCommerceService {
     }
   };
 
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
 
   getProducts(website: WebsiteId, page: number = 1, perPage: number = 10): Observable<Product[]> {
     if (!this.websites[website]) {
-      throw new Error(`Website ${website} is not supported`);
+      console.error(`Website ${website} is not supported`);
+      return of([]);
     }
 
     const url = `${this.websites[website]}/products`;
@@ -66,8 +67,13 @@ export class WooCommerceService {
         permalink: product.permalink,
         stockStatus: product.stock_status,
         website: website
-      })))
+      }))),
+      catchError(error => {
+        console.error('Error fetching products:', error);
+        return of([]);
+      })
     );
+    
   }
 
   getProductById(website: WebsiteId, productId: number): Observable<Product> {
@@ -98,9 +104,12 @@ export class WooCommerceService {
 
   searchProducts(website: WebsiteId, searchTerm: string, page: number = 1, perPage: number = 10): Observable<Product[]> {
     if (!this.websites[website]) {
-      throw new Error(`Website ${website} is not supported`);
+      console.error(`Website ${website} is not supported`);
+      return of([]);
     }
 
+  
+    
     const url = `${this.websites[website]}/products`;
     const params = new HttpParams()
       .set('consumer_key', this.credentials[website].consumerKey)
@@ -121,7 +130,13 @@ export class WooCommerceService {
         permalink: product.permalink,
         stockStatus: product.stock_status,
         website: website
-      })))
+      }))),
+      catchError(error => {
+        console.error('Error searching products:', error);
+        return of([]);
+      })
     );
+  
   }
+
 }

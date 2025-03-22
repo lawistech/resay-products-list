@@ -157,7 +157,11 @@ export class AuthService {
     try {
       await this.supabaseService.supabaseClient.auth.signOut();
       this.currentUserSubject.next(null);
-      this.router.navigate(['/login']);
+      
+      // Use setTimeout to ensure navigation happens in next event cycle
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 0);
     } catch (error) {
       console.error('Error signing out:', error);
     }

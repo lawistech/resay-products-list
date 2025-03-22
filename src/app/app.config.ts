@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { importProvidersFrom } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 // Function to initialize app settings
 function initializeApp() {
@@ -17,6 +18,7 @@ function initializeApp() {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
+    provideHttpClient(),
     {
       provide: APP_INITIALIZER,
       useFactory: () => 

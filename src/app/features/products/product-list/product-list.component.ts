@@ -1,5 +1,5 @@
 // src/app/features/products/product-list/product-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WooCommerceService } from '../../../core/services/woocommerce.service';
@@ -32,10 +32,10 @@ export class ProductListComponent implements OnInit {
     { id: 'bestore' as WebsiteId, name: 'BE Store' }
   ];
 
-  constructor(
-    private wooCommerceService: WooCommerceService,
-    private fb: FormBuilder
-  ) {
+  private wooCommerceService = inject(WooCommerceService);
+  private fb = inject(FormBuilder);
+  
+  constructor() {
     this.searchForm = this.fb.group({
       searchTerm: [''],
       website: [this.selectedWebsite]
@@ -51,6 +51,9 @@ export class ProductListComponent implements OnInit {
       this.currentPage = 1; // Reset to first page
       this.loadProducts();
     });
+    
+    // Set totalPages to a value for demonstration
+    this.totalPages = 3;
   }
 
   loadProducts(): void {
