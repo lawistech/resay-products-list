@@ -1,12 +1,12 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { TaskBoardComponent } from './features/tasks/task-board/task-board.component';
+import { ProductListComponent } from './features/products/product-list/product-list.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'tasks',
+    redirectTo: 'products',
     pathMatch: 'full'
   },
   {
@@ -14,12 +14,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: 'tasks',
-    component: TaskBoardComponent,
+    path: 'products',
+    component: ProductListComponent,
     canActivate: [AuthGuard],
   },
   {
     path: '**',
-    redirectTo: 'tasks'
+    redirectTo: 'products'
   }
 ];
