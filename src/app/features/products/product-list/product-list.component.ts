@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WooCommerceService } from '../../../core/services/woocommerce.service';
 import { Product } from '../../../core/models/product.model';
+import { ProductDetailsModalComponent } from '../product-details-modal/product-details-modal.component';
 
 // Define website types for type safety - must match WooCommerceService
 type WebsiteId = 'resay' | 'barcodesforbusiness' | 'androidepos' | 'bestore';
@@ -11,7 +12,7 @@ type WebsiteId = 'resay' | 'barcodesforbusiness' | 'androidepos' | 'bestore';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ProductDetailsModalComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
@@ -25,6 +26,11 @@ export class ProductListComponent implements OnInit {
   perPage = 10;
   selectedWebsite: WebsiteId = 'resay'; // Default website with correct type
   searchForm: FormGroup;
+  
+  // Modal properties
+  selectedProduct: Product | null = null;
+  isModalOpen = false;
+  
   websites = [
     { id: 'resay' as WebsiteId, name: 'Resay' },
     { id: 'barcodesforbusiness' as WebsiteId, name: 'Barcodes For Business' },
@@ -126,5 +132,15 @@ export class ProductListComponent implements OnInit {
   getWebsiteName(websiteId: string): string {
     const website = this.websites.find(w => w.id === websiteId);
     return website ? website.name : websiteId;
+  }
+  
+  openProductDetails(product: Product): void {
+    this.selectedProduct = product;
+    this.isModalOpen = true;
+  }
+  
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedProduct = null;
   }
 }
